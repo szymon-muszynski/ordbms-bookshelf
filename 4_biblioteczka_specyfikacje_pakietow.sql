@@ -1,0 +1,65 @@
+CREATE OR REPLACE PACKAGE ZARZADZANIE_BIBLIOTECZKA AS  
+    PROCEDURE DODAJ_KSIAZKE (
+        p_tytul VARCHAR2,
+        p_imie_autora VARCHAR2, -- tutaj jak autor nie istnieje, to wywalam blad
+        p_nazwisko_autora VARCHAR2,
+        p_id_szafki INT DEFAULT NULL
+    );
+    
+    PROCEDURE USUN_KSIAZKE(
+        p_tytul VARCHAR2
+    );
+    
+    PROCEDURE MODYFIKUJ_DANE_KSIAZKI(
+        p_stary_tytul VARCHAR2,
+        p_nowy_tytul VARCHAR2 DEFAULT NULL,
+        p_nowe_imie_autora VARCHAR2 DEFAULT NULL,--TUTAJ JEZELI NIE BEDZIE AUTORA TO WYWALAMY BLAD
+        p_nowe_nazwisko_autora VARCHAR2 DEFAULT NULL
+    );
+    
+    -- TUTAJ Z TYMI STRONAMI, TO TRZEBA PRZEMYSLEC W JAKI SPOSOB TE NUMERACJE OGARNAC,
+    -- MOZE NIECH KAZDA BEDZIE UNIQUE POPROSTU, BEZ JAKIEGOS TAM NAPRAWIANIA KOLEJNOSCI
+    -- BO MOZE KTOS BEDZIE CHCIAL USUNAC JEDNA STRONE, I W JEJ MIEJSCE DOKLADNIE WSTAWIC NOWA
+    PROCEDURE DODAJ_STRONE (
+        p_tytul_ksiazki VARCHAR2, -- JEZELI NIE BEDZIE KSIAZKI blad
+        p_tresc VARCHAR2,
+        p_numer_strony NUMBER
+    );
+    
+    PROCEDURE USUN_STRONE (
+        p_tytul_ksiazki VARCHAR2, -- jezeli nie ma ksiazki albo strony o takim numerze, to blad
+        p_numer_strony NUMBER 
+    );
+    
+    PROCEDURE DODAJ_GATUNEK (p_nazwa VARCHAR2);
+    PROCEDURE USUN_GATUNEK (p_nazwa VARCHAR2);
+    
+    PROCEDURE DODAJ_KSIAZCE_GATUNEK (-- TUTAJ JEZELI NIE BEDZIE GATUNKU ALBO KSIAZKI TO WYWALAMY BLAD
+        p_tytul_ksiazki VARCHAR2,
+        p_nazwa_gatunku VARCHAR2
+    ); 
+    PROCEDURE USUN_KSIAZCE_GATUNEK ( -- TUTAJ JEZELI NIE BEDZIE GATUNKU ALBO KSIAZKI TO WYWALAMY BLAD
+        p_tytul_ksiazki VARCHAR2,
+        p_nazwa_gatunku VARCHAR2
+    );
+    
+    PROCEDURE DODAJ_AUTORA (p_imie VARCHAR2, p_nazwisko VARCHAR2);
+    PROCEDURE USUN_AUTORA (p_imie VARCHAR2, p_nazwisko VARCHAR2);
+    
+    PROCEDURE DODAJ_SZAFKE (p_max_pojemnosc NUMBER);
+    PROCEDURE USUN_SZAFKE (p_id_szafki INT);
+    
+    PROCEDURE ZMIEN_SZAFKE_KSIAZKI(
+        p_tytul VARCHAR2,
+        p_id_nowej_szafki INT DEFAULT NULL -- NULL oznacza usuniecie z szafki
+    );
+    
+    FUNCTION ILE_STRON_MA_KSIAZKA(p_tytul VARCHAR2) RETURN NUMBER;
+    
+END ZARZADZANIE_BIBLIOTECZKA;
+
+CREATE OR REPLACE PACKAGE WYSWIETLANIE AS
+    PROCEDURE WYSWIETL_WSZYSTKIE_KSIAZKI_Z_SZAFKI(p_id_szafki INT);
+    PROCEDURE WYSWIETL_SZCZEGOLY_KSIAZKI(p_tytul VARCHAR2);
+    PROCEDURE WYSWIETL_KSIAZKI_AUTORA(p_imie VARCHAR2, p_nazwisko VARCHAR2);
+END WYSWIETLANIE;
